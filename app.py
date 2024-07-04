@@ -50,7 +50,3 @@ def add(req: Request, todo_id: int, db: Session = Depends(get_db)):
     db.commit()
     url = app.url_path_for("home")
     return RedirectResponse(url=url, status_code=status.HTTP_303_SEE_OTHER)
-
-
-if __name__ == '__main__':
-    uvicorn.run("app:app",host="0.0.0.0", port=8000)
