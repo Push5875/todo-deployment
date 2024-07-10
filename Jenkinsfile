@@ -36,7 +36,6 @@ pipeline {
 
     post {
         always {
-            cleanWS()
             sh 'echo "Pipeline and Clean Up finished."'
         }
 
