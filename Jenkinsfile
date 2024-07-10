@@ -8,7 +8,7 @@ pipeline {
             }
         }
 
-        stage {
+        stage('Checkout Branch') {
             steps {
                 sh 'git checkout dev'
             }
@@ -24,7 +24,11 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                sh 'pytest'
+                script {
+                    dockerImage.inside{
+                        sh 'pytest --maxfail=1 --disable-warnings'
+                    }
+                }
             }
         }
 
@@ -34,6 +38,14 @@ pipeline {
         always {
             cleanWS()
             sh 'echo "Pipeline and Clean Up finished."'
+        }
+
+        success {
+            sh 'echo "Pipeline success'
+        }
+
+        failure {
+            sh 'echo "Pipeline failed"'
         }
     }
 }
