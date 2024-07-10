@@ -10,6 +10,7 @@ pipeline {
 
         stage('Build docker image') {
             steps {
+                sh 'echo "Files in workspace after building Docker image:" && ls -R'
                 script{
                     dockerImage = docker.build("scheduler-app:1.0.0")
                 }
