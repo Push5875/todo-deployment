@@ -14,7 +14,7 @@ pipeline {
             }
         }
 
-        stage {
+        stage('Pull latest code') {
             steps{
                 sh 'git pull'
             }
