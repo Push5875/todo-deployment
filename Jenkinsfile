@@ -25,7 +25,7 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
-                    dockerImage.inside{
+                    dockerImage.inside {
                         sh 'pytest --maxfail=1 --disable-warnings'
                     }
                 }
@@ -41,7 +41,7 @@ pipeline {
         }
 
         success {
-            sh 'echo "Pipeline success'
+            sh 'echo "Pipeline success"'
         }
 
         failure {
