@@ -14,6 +14,12 @@ pipeline {
             }
         }
 
+        stage {
+            steps{
+                sh 'git pull'
+            }
+        }
+
         stage('Build docker image') {
             steps {
                 script{
