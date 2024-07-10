@@ -15,20 +15,6 @@ pipeline {
                 'docker build -t scheduler:1.0.0 .'
             }
         }
-
-        stage('Test') {
-            steps {
-                // Commands to test your project
-                sh 'echo "Running tests..."'
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                // Commands to deploy your project
-                sh 'echo "Deploying project..."'
-            }
-        }
     }
 
     post {
