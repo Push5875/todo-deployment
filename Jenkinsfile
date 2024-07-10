@@ -12,6 +12,7 @@ pipeline {
             steps {
                 // Commands to build your project (e.g., mvn clean install for a Maven project)
                 sh 'echo "Building project..."'
+                'docker build -t scheduler:1.0.0 .'
             }
         }
 
