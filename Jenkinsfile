@@ -8,11 +8,11 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build docker image') {
             steps {
-                // Commands to build your project (e.g., mvn clean install for a Maven project)
-                sh 'echo "Building project..."'
-                sh 'docker build -t scheduler:1.0.0 .'
+                script{
+                    dockerImage = docker.build("scheduler-app:1.0.0")
+                }
             }
         }
     }
