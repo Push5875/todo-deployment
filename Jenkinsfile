@@ -8,21 +8,32 @@ pipeline {
             }
         }
 
-        stage('Build docker image') {
+        stage {
             steps {
                 sh 'git checkout dev'
-                sh 'echo "Files in workspace after building Docker image:" && ls -R'
+            }
+        }
+
+        stage('Build docker image') {
+            steps {
                 script{
                     dockerImage = docker.build("scheduler-app:1.0.0")
                 }
             }
         }
+
+        stage('Run Tests') {
+            steps {
+                sh 'pytest'
+            }
+        }
+
     }
 
     post {
         always {
-            // Commands that should always run after the pipeline (e.g., clean up)
-            sh 'echo "Pipeline finished."'
+            cleanWS()
+            sh 'echo "Pipeline and Clean Up finished."'
         }
     }
 }
