@@ -51,9 +51,6 @@ pipeline {
 
         failure {
             sh 'echo "Pipeline failed"'
-            mail to: 'mhatrepushpak00@rediffmail.com',
-             subject: "Pipeline failed",
-             body: "The pipeline has failed. Check the Jenkins console for details."
         }
     }
 }
