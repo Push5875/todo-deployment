@@ -32,7 +32,7 @@ pipeline {
             steps {
                 script {
                     dockerImage.inside {
-                        sh 'pytest --maxfail=1 --disable-warnings'
+                        sh 'pytest --maxfail=1 --disable-warnings --html=report.html'
                     }
                 }
             }
@@ -51,6 +51,9 @@ pipeline {
 
         failure {
             sh 'echo "Pipeline failed"'
+            mail to: 'mhatrepushpak00@rediffmail.com',
+             subject: "Pipeline failed",
+             body: "The pipeline has failed. Check the Jenkins console for details."
         }
     }
 }
