@@ -9,15 +9,19 @@ pipeline{
         }
     }
 
-    always{
-        sh 'echo "pipeline completed"'
+    post{
+        always{
+                sh 'echo "pipeline completed"'
+            }
+
+        success{
+            sh 'echo "success"'
+        }
+
+        failure{
+            sh 'echo "failure"'
+        }
+
     }
 
-    success{
-        sh 'echo "success"'
-    }
-
-    failure{
-        sh 'echo "failure"'
-    }
 }
