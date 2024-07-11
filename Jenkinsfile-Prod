@@ -1,7 +1,7 @@
 pipeline{
     agent any 
     stages{
-        stage(""){
+        stage("Git clone"){
             sh 'echo "hi"'
         }
     }
