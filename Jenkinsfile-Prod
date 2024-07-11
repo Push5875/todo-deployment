@@ -1,0 +1,20 @@
+pipeline{
+    agent any 
+    stages{
+        stage(""){
+            sh 'echo "hi"'
+        }
+    }
+
+    always{
+        sh 'echo "pipeline completed"'
+    }
+
+    success{
+        sh 'echo "success"'
+    }
+
+    failure{
+        sh 'echo "failure"'
+    }
+}
