@@ -4,7 +4,7 @@ pipeline {
     environment {
         SONARQUBE_SERVER = 'sonarqube-scanner'
     }
-    
+
     stages {
         stage('Clone Repository') {
             steps {
@@ -53,9 +53,9 @@ pipeline {
         stage('Quality-Gate') {
             steps{
                 def qg = waitForQualityGate()
-                    if (qg.status != 'OK') {
-                        error "Pipeline aborted due to quality gate failure: ${qg.status}"
-                    }
+                if (qg.status != 'OK') {
+                    error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                }
             }
         }
 
