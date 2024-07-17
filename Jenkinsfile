@@ -1,8 +1,10 @@
 pipeline {
     agent any
-    enviornment {
+     
+    environment {
         SONARQUBE_SERVER = 'sonarqube-scanner'
     }
+    
     stages {
         stage('Clone Repository') {
             steps {
