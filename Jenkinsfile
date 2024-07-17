@@ -2,7 +2,7 @@ pipeline {
     agent any
      
     environment {
-        SONARQUBE_SERVER = 'sonarqube-scanner'
+        SONARQUBE_SERVER = 'scheduler-app'
     }
 
     stages {
@@ -45,7 +45,7 @@ pipeline {
         stage("Execute SonarQube Scanner"){
             steps{
                 withSonarQubeEnv(SONARQUBE_SERVER) {
-                    sh 'scheduler-app'
+                    sh 'sonar-scanner'
                 }
             }
         }
