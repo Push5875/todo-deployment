@@ -45,7 +45,7 @@ pipeline {
         stage("Execute SonarQube Scanner"){
             steps{
                 withSonarQubeEnv(SONARQUBE_SERVER) {
-                    sh 'sonar-scanner'
+                    sh 'scheduler-app'
                 }
             }
         }
