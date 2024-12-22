@@ -15,7 +15,7 @@ app.add_middleware(
 )
 
 # MongoDB connection
-client = MongoClient("mongodb://masteruser:securepassword123@localhost:27017/?directConnection=true&tls=true&tlsAllowInvalidHostnames=true&tlsCAFile=/home/pushpak/DevOps_Projects/todo-deployment/backend/global-bundle.pem&retryWrites=false")
+client = MongoClient("mongodb://masteruser:securepassword123@docdb-instance-1.cxqkqmmkq3qy.us-east-1.docdb.amazonaws.com:27017/my_database?tls=true&tlsCAFile=global-bundle.pem&authMechanism=SCRAM-SHA-1&retryWrites=false")
 db = client["my_database"]
 collection = db["item"]
 
