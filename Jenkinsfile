@@ -1,5 +1,9 @@
 pipeline {
     agent any
+     
+    environment {
+        SONARQUBE_SERVER = 'scheduler-app'
+    }
 
     stages {
         stage('Clone Repository') {
@@ -8,7 +12,7 @@ pipeline {
             }
         }
 
-        stage('Checkout Branch') {
+        stage('Checkout Branch Development') {
             steps {
                 sh 'git checkout dev'
             }
@@ -23,7 +27,7 @@ pipeline {
         stage('Build docker image') {
             steps {
                 script{
-                    dockerImage = docker.build("scheduler-app:1.0.0")
+                    dockerImage = docker.build("scheduler-app:dev")
                 }
             }
         }
@@ -34,6 +38,27 @@ pipeline {
                     dockerImage.inside {
                         sh 'pytest --maxfail=1 --disable-warnings --html=report.html'
                     }
+                }
+            }
+        }
+
+        stage("Execute SonarQube Scanner"){
+            steps{
+                withSonarQubeEnv(SONARQUBE_SERVER) {
+                    sh 'sonar-scanner'
+                }
+            }
+        }
+        
+        stage('Quality-Gate') {
+            steps{
+                script {
+                    def qg = waitForQualityGate()
+                    if (qg.status != 'OK') {
+                        error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                    } else {
+                            println "Code Quality Ok"
+                            } 
                 }
             }
         }
