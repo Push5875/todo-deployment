@@ -1,3 +1,5 @@
 fastapi
 pymongo
 uvicorn
+pydantic
+gunicorn

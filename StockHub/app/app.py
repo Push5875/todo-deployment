@@ -2,9 +2,10 @@ from fastapi import FastAPI, HTTPException
 from pymongo import MongoClient
 from pydantic import BaseModel
 import os
+from fastapi.middleware.cors import CORSMiddleware
 # FastAPI instance
 app = FastAPI()
-from fastapi.middleware.cors import CORSMiddleware
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -15,7 +16,15 @@ app.add_middleware(
 )
 
 # MongoDB connection
-client = MongoClient("mongodb://masteruser:securepassword123@docdb-instance-1.cxqkqmmkq3qy.us-east-1.docdb.amazonaws.com:27017/my_database?tls=true&tlsCAFile=global-bundle.pem&authMechanism=SCRAM-SHA-1&retryWrites=false")
+
+# Get the directory of the current file (app.py)
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Construct the path to the global-bundle.pem file
+pem_file_path = os.path.join(current_dir, 'global-bundle.pem')
+# mongo_uri = os.getenv("MONGO_URI")
+# print(mongo_uri)
+client = MongoClient(f"mongodb://masteruser:securepassword123@docdb-instance-1.cxqkqmmkq3qy.us-east-1.docdb.amazonaws.com:27017/my_database?tls=true&tlsCAFile={pem_file_path}&authMechanism=SCRAM-SHA-1&retryWrites=false")
 db = client["my_database"]
 collection = db["item"]
 
@@ -46,4 +55,3 @@ def delete_item(name: str):
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Item not found")
     return {"message": f"Item '{name}' deleted successfully"}
-
