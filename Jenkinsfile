@@ -1,95 +1,59 @@
- pipeline {
-    agent any
+pipeline {
+    agent any  // Runs on any available agent
 
-    // environment {
-    //     // Define environment variables
-    //     AWS_REGION = 'us-east-1'
-    //     EB_APP_NAME = 'my-python-app'
-    //     EB_ENV_NAME = 'my-python-env'
-    //     S3_BUCKET_NAME = 'my-app-bucket'
-    //     TERRAFORM_REPO = 'git@github.com:your-org/terraform-repo.git'
-    // }
+    environment {
+        DOCKER_CREDENTIALS = credentials('docker-hub-credentials')
+        REPO_URL = 'https://github.com/Push5875/todo-deployment.git'
+    }
 
     stages {
         stage('Checkout Code') {
             steps {
-                // Checkout the source code repository
                 checkout scm
             }
         }
-
-        // stage('Install Dependencies') {
+        
+        // stage('Build') {
+        //     steps {
+        //         echo 'Building the project...'
+        //         sh 'make build'  // Example build command
+        //     }
+        // }
+        
+        // stage('Test') {
+        //     steps {
+        //         echo 'Running tests...'
+        //         sh 'make test'  // Example test command
+        //     }
+        // }
+        
+        // stage('Docker Build & Push') {
         //     steps {
         //         script {
-        //             // Install Python dependencies from requirements.txt
-        //             sh 'pip install -r requirements.txt'
+        //             docker.build('my-app-image:latest')
+        //                 .withRegistry('https://registry.hub.docker.com', DOCKER_CREDENTIALS)
+        //                 .push('latest')
         //         }
         //     }
         // }
-
-        // stage('Run Tests') {
+        
+        // stage('Deploy') {
         //     steps {
-        //         script {
-        //             // Run tests (e.g., unit tests, integration tests)
-        //             sh 'pytest tests/'
-        //         }
-        //     }
-        // }
-
-        // stage('Build Docker Image') {
-        //     steps {
-        //         script {
-        //             // Build Docker image (optional, if using Docker for Elastic Beanstalk)
-        //             sh 'docker build -t $EB_APP_NAME .'
-        //         }
-        //     }
-        // }
-
-        // stage('Deploy with Terraform') {
-        //     steps {
-        //         script {
-        //             // Clone the Terraform repository to configure infrastructure
-        //             dir('terraform') {
-        //                 git url: env.TERRAFORM_REPO
-
-        //                 // Apply Terraform configurations for Elastic Beanstalk
-        //                 sh 'terraform init'
-        //                 sh 'terraform apply -auto-approve'
-        //             }
-        //         }
-        //     }
-        // }
-
-        // stage('Deploy to Elastic Beanstalk') {
-        //     steps {
-        //         script {
-        //             // Deploy the application to Elastic Beanstalk using AWS CLI
-        //             sh 'eb init $EB_APP_NAME --region $AWS_REGION'
-        //             sh 'eb use $EB_ENV_NAME'
-        //             sh 'eb deploy'
-        //         }
-        //     }
-        // }
-
-        // stage('Post-Deploy Cleanup') {
-        //     steps {
-        //         script {
-        //             // Clean up any resources if necessary
-        //             echo 'Cleaning up temporary files'
-        //             sh 'rm -rf .ebextensions'
-        //         }
+        //         echo 'Deploying the application...'
+        //         sh './deploy.sh'  // Example deployment script
         //     }
         // }
     }
 
     post {
+        always {
+            echo 'Pipeline execution complete.'
+        }
         success {
-            // Notify on successful deployment
-            echo "Deployment was successful"
+            echo 'Build succeeded!'
         }
         failure {
-            // Notify on failure (could be extended for Slack, email, etc.)
-            echo "Deployment failed"
+            echo 'Build failed!'
         }
     }
 }
