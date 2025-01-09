@@ -1,7 +1,6 @@
 pipeline {
     agent any  
     environment {
-        DOCKER_CREDENTIALS = credentials('docker-hub-credentials')
         REPO_URL = 'https://github.com/Push5875/todo-deployment.git'
         BRANCH_NAME = "dev"
     }
@@ -12,37 +11,7 @@ pipeline {
                 git url: env.REPO_URL, branch: env.BRANCH_NAME
             }
         }
-        
-        // stage('Build') {
-        //     steps {
-        //         echo 'Building the project...'
-        //         sh 'make build'  // Example build command
-        //     }
-        // }
-        
-        // stage('Test') {
-        //     steps {
-        //         echo 'Running tests...'
-        //         sh 'make test'  // Example test command
-        //     }
-        // }
-        
-        // stage('Docker Build & Push') {
-        //     steps {
-        //         script {
-        //             docker.build('my-app-image:latest')
-        //                 .withRegistry('https://registry.hub.docker.com', DOCKER_CREDENTIALS)
-        //                 .push('latest')
-        //         }
-        //     }
-        // }
-        
-        // stage('Deploy') {
-        //     steps {
-        //         echo 'Deploying the application...'
-        //         sh './deploy.sh'  // Example deployment script
-        //     }
-        // }
+       
     }
 
     post {
