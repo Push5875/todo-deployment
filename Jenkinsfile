@@ -1,15 +1,15 @@
 pipeline {
-    agent any  // Runs on any available agent
-
+    agent any  
     environment {
         DOCKER_CREDENTIALS = credentials('docker-hub-credentials')
         REPO_URL = 'https://github.com/Push5875/todo-deployment.git'
+        BRANCH_NAME = "dev"
     }
 
     stages {
         stage('Checkout Code') {
             steps {
-                checkout scm
+                git url: env.REPO_URL, branch: env.BRANCH_NAME
             }
         }
         
