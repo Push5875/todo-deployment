@@ -6,7 +6,7 @@ pipeline {
         BRANCH_NAME = 'dev'
         AWS_REGION = 'us-east-1'
         AWS_ACCOUNT_ID = '992382393618'
-        REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+        REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/stockhub"
         IMAGE_REPO_NAME = 'stockhub'
         SERVICE_IMAGE_NAME = 'stockhub-service'
         FRONTEND_IMAGE_NAME = 'stockhub-frontend'
@@ -57,7 +57,7 @@ pipeline {
                     steps {
                         script {
                             sh """
-                                docker tag ${SERVICE_IMAGE_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}/${SERVICE_IMAGE_NAME}:${IMAGE_TAG}
+                                docker tag ${SERVICE_IMAGE_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:${IMAGE_TAG}
                                 docker push ${REPOSITORY_URI}/${IMAGE_REPO_NAME}:${IMAGE_TAG}
                             """
                         }
@@ -68,7 +68,7 @@ pipeline {
                     steps {
                         script {
                             sh """
-                                docker tag ${FRONTEND_IMAGE_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}/${FRONTEND_IMAGE_NAME}:${IMAGE_TAG}
+                                docker tag ${FRONTEND_IMAGE_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:${IMAGE_TAG}
                                 docker push ${REPOSITORY_URI}/${IMAGE_REPO_NAME}:${IMAGE_TAG}
                             """
                         }
