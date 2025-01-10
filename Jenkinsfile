@@ -17,17 +17,17 @@ pipeline {
             }
         }
 
-        // stage('Logging into AWS ECR') {
-        //     steps {
-        //         withCredentials([aws(credentialsId: '4bce35e7-a6f6-4420-a3c0-ed8eedd5152f', region: 'us-east-1')]){
-        //                     sh'''
-        //                         aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
-        //                     '''
+        stage('Logging into AWS ECR') {
+            steps {
+                withCredentials([aws(credentialsId: '4bce35e7-a6f6-4420-a3c0-ed8eedd5152f', region: 'us-east-1')]){
+                            sh'''
+                                aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+                            '''
                                 
-        //                     }
+                            }
                              
-        //         }
-        // }
+                }
+        }
         
         // stage('Building image') {
         //                      steps{
