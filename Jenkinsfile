@@ -58,7 +58,7 @@ pipeline {
                         script {
                             sh """
                                 docker tag ${SERVICE_IMAGE_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}/${SERVICE_IMAGE_NAME}:${IMAGE_TAG}
-                                docker push ${REPOSITORY_URI}/${SERVICE_IMAGE_NAME}:${IMAGE_TAG}
+                                docker push ${REPOSITORY_URI}/${IMAGE_REPO_NAME}:${IMAGE_TAG}
                             """
                         }
                     }
@@ -69,7 +69,7 @@ pipeline {
                         script {
                             sh """
                                 docker tag ${FRONTEND_IMAGE_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}/${FRONTEND_IMAGE_NAME}:${IMAGE_TAG}
-                                docker push ${REPOSITORY_URI}/${FRONTEND_IMAGE_NAME}:${IMAGE_TAG}
+                                docker push ${REPOSITORY_URI}/${IMAGE_REPO_NAME}:${IMAGE_TAG}
                             """
                         }
                     }
