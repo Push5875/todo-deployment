@@ -1,0 +1,9 @@
+{
+    "rules": {
+        "indentation": {
+            "spaces": 4
+        },
+        "braces": "same-line",
+        "line-length": 120
+    }
+}

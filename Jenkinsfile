@@ -1,13 +1,17 @@
+/* groovylint-disable LineLength */
 pipeline {
-    agent any  
+    agent any
     environment {
         REPO_URL = 'https://github.com/Push5875/todo-deployment.git'
-        BRANCH_NAME = "dev"
+        BRANCH_NAME = 'dev'
         AWS_REGION = 'us-east-1'
         AWS_ACCOUNT_ID = '992382393618'
         REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
-        IMAGE_REPO_NAME="stockhub"
-        IMAGE_TAG = "latest"
+        IMAGE_REPO_NAME = 'stockhub'
+        SERVICE_IMAGE_NAME = 'stockhub-service'
+        FRONTEND_IMAGE_NAME = 'stockhub-frontend'
+        IMAGE_TAG = 'latest'
+        AWS_CRED = '4bce35e7-a6f6-4420-a3c0-ed8eedd5152f'
     }
 
     stages {
@@ -19,31 +23,59 @@ pipeline {
 
         stage('Logging into AWS ECR') {
             steps {
-                withCredentials([aws(credentialsId: '4bce35e7-a6f6-4420-a3c0-ed8eedd5152f', region: 'us-east-1')]){
-                            sh'''
-                                aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
-                            '''
-                                
-                            }
-                             
+                withCredentials([aws(credentialsId: "${AWS_CRED}", region: 'us-east-1')]) {
+                    sh '''
+                        aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+                    '''
                 }
+            }
         }
-        
-        stage('Building image') {
-                             steps{
-                             script {
-                             dockerImage = docker.build "${IMAGE_REPO_NAME}:${IMAGE_TAG}", "StockHub"
-                             }
-                            }
-                            }
+
+        stage('Building Docker Images') {
+            parallel {
+                stage('Building service image') {
+                    steps {
+                        script {
+                            dockerImage = docker.build("${SERVICE_IMAGE_NAME}:${IMAGE_TAG}", 'StockHub')
+                        }
+                    }
+                }
+
+                stage('Building frontend image') {
+                    steps {
+                        script {
+                            dockerImage = docker.build("${FRONTEND_IMAGE_NAME}:${IMAGE_TAG}", 'frontend')
+                        }
+                    }
+                }
+            }
+        }
+
         stage('Pushing to ECR') {
-                     steps{ 
-                     script {
-                     sh "docker tag ${IMAGE_REPO_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}/${IMAGE_REPO_NAME}:$IMAGE_TAG"
-                     sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${IMAGE_TAG}"
-                     }
-                     }
-                     }
+            parallel {
+                stage('Push service image') {
+                    steps {
+                        script {
+                            sh """
+                                docker tag ${SERVICE_IMAGE_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}/${SERVICE_IMAGE_NAME}:${IMAGE_TAG}
+                                docker push ${REPOSITORY_URI}/${SERVICE_IMAGE_NAME}:${IMAGE_TAG}
+                            """
+                        }
+                    }
+                }
+
+                stage('Push frontend image') {
+                    steps {
+                        script {
+                            sh """
+                                docker tag ${FRONTEND_IMAGE_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}/${FRONTEND_IMAGE_NAME}:${IMAGE_TAG}
+                                docker push ${REPOSITORY_URI}/${FRONTEND_IMAGE_NAME}:${IMAGE_TAG}
+                            """
+                        }
+                    }
+                }
+            }
+        }
     }
 
     post {
