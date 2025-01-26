@@ -11,7 +11,7 @@ pipeline {
         SERVICE_IMAGE_NAME = 'stockhub-service'
         FRONTEND_IMAGE_NAME = 'stockhub-frontend'
         IMAGE_TAG = 'latest'
-        AWS_CRED = '4bce35e7-a6f6-4420-a3c0-ed8eedd5152f'
+        AWS_CRED = 'stockhub-production'
     }
 
     stages {
@@ -36,7 +36,7 @@ pipeline {
                 stage('Building service image') {
                     steps {
                         script {
-                            dockerImage = docker.build("${SERVICE_IMAGE_NAME}:${IMAGE_TAG}", 'StockHub')
+                            dockerImage = docker.build("${SERVICE_IMAGE_NAME}:${IMAGE_TAG}", 'backend')
                         }
                     }
                 }
