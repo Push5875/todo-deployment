@@ -6,39 +6,88 @@
     <title>FastAPI DocumentDB Demo</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
         }
         .container {
-            max-width: 600px;
-            margin: auto;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            text-align: center;
+            color: #444;
         }
         input, button {
-            margin: 5px 0;
-            padding: 10px;
-            width: 100%;
+            margin: 10px 0;
+            padding: 12px;
+            width: calc(100% - 24px);
             box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        input:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 4px rgba(0, 123, 255, 0.25);
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            font-weight: bold;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .status {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .success {
+            color: #28a745;
+        }
+        .error {
+            color: #dc3545;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
+            margin-top: 20px;
+            font-size: 14px;
         }
         table, th, td {
             border: 1px solid #ddd;
         }
         th, td {
-            padding: 10px;
+            padding: 12px;
             text-align: left;
         }
         th {
-            background-color: #f4f4f4;
+            background-color: #007bff;
+            color: white;
         }
-        .success {
-            color: green;
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
         }
-        .error {
-            color: red;
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .refresh-btn {
+            text-align: center;
         }
     </style>
 </head>
@@ -51,17 +100,19 @@
             <input id="itemDescription" type="text" placeholder="Description" />
             <input id="itemPrice" type="number" placeholder="Price" />
             <button onclick="addItem()">Add Item</button>
-            <p id="addItemStatus"></p>
+            <p id="addItemStatus" class="status"></p>
         </div>
         <div>
             <h2>Delete Item</h2>
             <input id="deleteItemName" type="text" placeholder="Item Name" />
             <button onclick="deleteItem()">Delete Item</button>
-            <p id="deleteItemStatus"></p>
+            <p id="deleteItemStatus" class="status"></p>
         </div>
         <div>
             <h2>Item List</h2>
-            <button onclick="fetchItems()">Refresh List</button>
+            <div class="refresh-btn">
+                <button onclick="fetchItems()">Refresh List</button>
+            </div>
             <table id="itemTable">
                 <thead>
                     <tr>

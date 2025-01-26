@@ -22,8 +22,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Construct the path to the global-bundle.pem file
 pem_file_path = os.path.join(current_dir, 'global-bundle.pem')
-# mongo_uri = os.getenv("MONGO_URI")
-# print(mongo_uri)
+
 client = MongoClient(f"mongodb://masteruser:securepassword123@docdb-instance-1.cxqkqmmkq3qy.us-east-1.docdb.amazonaws.com:27017/my_database?tls=true&tlsCAFile={pem_file_path}&authMechanism=SCRAM-SHA-1&retryWrites=false")
 db = client["my_database"]
 collection = db["item"]
