@@ -34,11 +34,7 @@ pipeline {
         stage('Build, Tag and Push Docker Images'){
             steps {
                 sh '''docker build -t ${SERVICE_IMAGE_NAME}:${IMAGE_TAG} ./backend
-                      docker build -t ${FRONTEND_IMAGE_NAME}:${IMAGE_TAG} ./frontend
-                      docker tag ${SERVICE_IMAGE_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:${IMAGE_TAG}
-                      docker push ${REPOSITORY_URI}/${IMAGE_REPO_NAME}:${IMAGE_TAG}
-                      docker tag ${FRONTEND_IMAGE_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:${IMAGE_TAG}
-                      docker push ${REPOSITORY_URI}/${IMAGE_REPO_NAME}:${IMAGE_TAG}'''
+                      docker build -t ${FRONTEND_IMAGE_NAME}:${IMAGE_TAG} ./frontend'''
             }
         }
         // stage('Building Docker Images') {
