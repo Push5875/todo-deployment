@@ -31,51 +31,51 @@ pipeline {
             }
         }
 
-        stage('Building Docker Images') {
-            parallel {
-                stage('Building service image') {
-                    steps {
-                        script {
-                            dockerImage = docker.build("${SERVICE_IMAGE_NAME}:${IMAGE_TAG}", 'backend')
-                        }
-                    }
-                }
+        // stage('Building Docker Images') {
+        //     parallel {
+        //         stage('Building service image') {
+        //             steps {
+        //                 script {
+        //                     dockerImage = docker.build("${SERVICE_IMAGE_NAME}:${IMAGE_TAG}", 'backend')
+        //                 }
+        //             }
+        //         }
 
-                stage('Building frontend image') {
-                    steps {
-                        script {
-                            dockerImage = docker.build("${FRONTEND_IMAGE_NAME}:${IMAGE_TAG}", 'frontend')
-                        }
-                    }
-                }
-            }
-        }
+        //         stage('Building frontend image') {
+        //             steps {
+        //                 script {
+        //                     dockerImage = docker.build("${FRONTEND_IMAGE_NAME}:${IMAGE_TAG}", 'frontend')
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
-        stage('Pushing to ECR') {
-            parallel {
-                stage('Push service image') {
-                    steps {
-                        script {
-                            sh """
-                                docker tag ${SERVICE_IMAGE_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:${IMAGE_TAG}
-                                docker push ${REPOSITORY_URI}/${IMAGE_REPO_NAME}:${IMAGE_TAG}
-                            """
-                        }
-                    }
-                }
+        // stage('Pushing to ECR') {
+        //     parallel {
+        //         stage('Push service image') {
+        //             steps {
+        //                 script {
+        //                     sh """
+        //                         docker tag ${SERVICE_IMAGE_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:${IMAGE_TAG}
+        //                         docker push ${REPOSITORY_URI}/${IMAGE_REPO_NAME}:${IMAGE_TAG}
+        //                     """
+        //                 }
+        //             }
+        //         }
 
-                stage('Push frontend image') {
-                    steps {
-                        script {
-                            sh """
-                                docker tag ${FRONTEND_IMAGE_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:${IMAGE_TAG}
-                                docker push ${REPOSITORY_URI}/${IMAGE_REPO_NAME}:${IMAGE_TAG}
-                            """
-                        }
-                    }
-                }
-            }
-        }
+        //         stage('Push frontend image') {
+        //             steps {
+        //                 script {
+        //                     sh """
+        //                         docker tag ${FRONTEND_IMAGE_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:${IMAGE_TAG}
+        //                         docker push ${REPOSITORY_URI}/${IMAGE_REPO_NAME}:${IMAGE_TAG}
+        //                     """
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
     }
 
     post {
