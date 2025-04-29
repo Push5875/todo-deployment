@@ -1,81 +1,98 @@
+/* groovylint-disable LineLength */
 pipeline {
     agent any
-     
     environment {
-        SONARQUBE_SERVER = 'scheduler-app'
+        REPO_URL = 'https://github.com/Push5875/todo-deployment.git'
+        BRANCH_NAME = 'dev'
+        AWS_REGION = 'us-east-1'
+        AWS_ACCOUNT_ID = '992382393618'
+        REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/stockhub"
+        IMAGE_REPO_NAME = 'stockhub'
+        SERVICE_IMAGE_NAME = 'stockhub-service'
+        FRONTEND_IMAGE_NAME = 'stockhub-frontend'
+        IMAGE_TAG = 'latest'
+        AWS_CRED = 'stockhub-production'
     }
 
     stages {
-        stage('Clone Repository') {
+        stage('Checkout Code') {
             steps {
-                git 'https://github.com/Push5875/todo-deployment.git'
+                git url: env.REPO_URL, branch: env.BRANCH_NAME
             }
         }
 
-        stage('Checkout Branch Development') {
+        stage('Logging into AWS ECR') {
             steps {
-                sh 'git checkout dev'
-            }
-        }
-
-        stage('Pull latest code') {
-            steps{
-                sh 'git pull'
-            }
-        }
-
-        stage('Build docker image') {
-            steps {
-                script{
-                    dockerImage = docker.build("scheduler-app:dev")
+                withCredentials([aws(credentialsId: "${AWS_CRED}", region: 'us-east-1')]) {
+                    sh '''
+                        aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+                    '''
                 }
             }
         }
 
-        stage('Run Tests') {
+        stage('Build, Tag and Push Docker Images'){
             steps {
-                script {
-                    dockerImage.inside {
-                        sh 'pytest --maxfail=1 --disable-warnings --html=report.html'
-                    }
-                }
+                sh '''docker build -t ${SERVICE_IMAGE_NAME}:${IMAGE_TAG} ./backend
+                      docker build -t ${FRONTEND_IMAGE_NAME}:${IMAGE_TAG} ./frontend'''
             }
         }
+        // stage('Building Docker Images') {
+        //     parallel {
+        //         stage('Building service image') {
+        //             steps {
+        //                 script {
+        //                     dockerImage = docker.build("${SERVICE_IMAGE_NAME}:${IMAGE_TAG}", 'backend')
+        //                 }
+        //             }
+        //         }
 
-        stage("Execute SonarQube Scanner"){
-            steps{
-                withSonarQubeEnv(SONARQUBE_SERVER) {
-                    sh 'sonar-scanner'
-                }
-            }
-        }
-        
-        stage('Quality-Gate') {
-            steps{
-                script {
-                    def qg = waitForQualityGate()
-                    if (qg.status != 'OK') {
-                        error "Pipeline aborted due to quality gate failure: ${qg.status}"
-                    } else {
-                            println "Code Quality Ok"
-                            } 
-                }
-            }
-        }
+        //         stage('Building frontend image') {
+        //             steps {
+        //                 script {
+        //                     dockerImage = docker.build("${FRONTEND_IMAGE_NAME}:${IMAGE_TAG}", 'frontend')
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
+        // stage('Pushing to ECR') {
+        //     parallel {
+        //         stage('Push service image') {
+        //             steps {
+        //                 script {
+        //                     sh """
+        //                         docker tag ${SERVICE_IMAGE_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:${IMAGE_TAG}
+        //                         docker push ${REPOSITORY_URI}/${IMAGE_REPO_NAME}:${IMAGE_TAG}
+        //                     """
+        //                 }
+        //             }
+        //         }
+
+        //         stage('Push frontend image') {
+        //             steps {
+        //                 script {
+        //                     sh """
+        //                         docker tag ${FRONTEND_IMAGE_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:${IMAGE_TAG}
+        //                         docker push ${REPOSITORY_URI}/${IMAGE_REPO_NAME}:${IMAGE_TAG}
+        //                     """
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
     }
 
     post {
         always {
-            sh 'echo "Pipeline and Clean Up finished."'
+            echo 'Pipeline execution complete.'
         }
-
         success {
-            sh 'echo "Pipeline success"'
+            echo 'Build succeeded!'
         }
-
         failure {
-            sh 'echo "Pipeline failed"'
+            echo 'Build failed!'
         }
     }
 }

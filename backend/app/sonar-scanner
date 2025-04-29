@@ -1,0 +1,5 @@
+/home/pushpak/Downloads/sonar-scanner-cli-6.2.1.4610-linux-x64/sonar-scanner-6.2.1.4610-linux-x64/bin/sonar-scanner \
+-Dsonar.projectKey=backend \
+-Dsonar.sources=. \
+-Dsonar.host.url=http://192.168.0.111:9000 \
+-Dsonar.login=8f1daed8df7d65b6e376cb15ff5bb794ecd9a6ae
